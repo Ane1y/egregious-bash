@@ -1,0 +1,88 @@
+@startuml
+class Environment {
+  vars_: Dict[str, str]
+  execs_: Dict[str, Executable]
+
+
+  set_variable(name: str, value: str)
+
+  variable(name: str): str
+  executable(name: str): str | None
+}
+
+interface Executable {
+  exec(env: Dict[str, str], args: List[str]): int
+  pipe_exec(env: Dict[str, str], args: List[str],\n\tstdin:File) : File
+}
+
+class External {
+  cmd: str
+}
+
+class Lexer {
+  env: Environment
+  update(env: Environment)
+  lex(input: str): Iterable[Tuple[str, str | None]]
+}
+
+class Parser {
+  env: Environment
+  update(env: Environment)
+  parse(input: Iterable): Program
+}
+
+class App {
+  env: Evironment
+  lexer: Lexer
+  parser: Parser
+  __init__(env: Dicr[str, str])
+  run()
+}
+
+abstract BuiltIn
+
+
+class Assignment{
+    name: str
+    value: str
+}
+
+class Cmd{
+    text: str
+    arguments: List[str]
+    prefix: List[Assignment]
+}
+
+class Pipeline {
+    cmds: List[Cmd]
+}
+
+class Program {
+	cmds: List[Cmd | Assignment | Pipeline]
+}
+
+Program *-- Cmd
+Program *-- Pipeline
+Program *-- Assignment
+Cmd *- Assignment
+Pipeline *- Cmd
+
+
+Parser .. Program
+
+
+App o-- Lexer
+App o-- Parser
+App o-- Environment
+
+Executable <|-- BuiltIn
+
+Executable <|-- External
+BuiltIn <|-- Cat
+BuiltIn <|-- Exit
+BuiltIn <|-- Echo
+BuiltIn <|-- Wc
+BuiltIn <|-- Pwd
+
+Environment *-- Executable
+@enduml

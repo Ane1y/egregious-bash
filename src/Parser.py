@@ -1,7 +1,7 @@
 
 
 from src.Lexer import Lex
-from typing import Iterable, Union
+from typing import Iterable, Union, List
 from dataclasses import dataclass
 
 
@@ -15,7 +15,7 @@ class Assignment:
 class Cmd:
     prefix: Iterable[Assignment]
     name: str
-    suffix: Iterable[str]  # TODO: Confirm
+    suffix: List[str]  # TODO: Confirm
 
 
 @dataclass

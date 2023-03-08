@@ -36,7 +36,7 @@ class App:
         if type(cmd) == Cmd:
             executable = self.env.get_exec(cmd.name)
 
-            cmd_env = Environment(self.env.dict)
+            cmd_env = Environment(self.env.variables)
             for ass in cmd.prefix:
                 cmd_env.set_var(ass.name, ass.value)
 

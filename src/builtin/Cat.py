@@ -1,7 +1,5 @@
-import sys
 from typing import  List
-from src.Environment import Environment
-from src.Executable import Executable, BuiltIn
+from src.Executable import BuiltIn
 import sys
 
 

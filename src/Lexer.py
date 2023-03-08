@@ -16,23 +16,28 @@ class ServiceSymbols(Lex):
         return False
 
 class Space(ServiceSymbols):
-    pass
+    def __str__(self):
+        return "space"
 
 
 class Equal(ServiceSymbols):
-    pass
+    def __str__(self):
+        return "="
 
 
 class PipeChar(ServiceSymbols):
-    pass
+    def __str__(self):
+        return "|"
 
 
 class EndLine(ServiceSymbols):
-    pass
+    def __str__(self):
+        return "eofl"
 
 
 class EndOfFile(ServiceSymbols):
-    pass
+    def __str__(self):
+        return "eof"
 
 
 @dataclass

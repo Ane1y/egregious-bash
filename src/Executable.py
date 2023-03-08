@@ -1,9 +1,12 @@
-
 from abc import ABC, abstractmethod
 from typing import Iterable
+from src.Environment import Environment
 
 
 class Executable(ABC):
+    @abstractmethod
+    def set_env(self, env: Environment):
+        raise NotImplemented
 
     @abstractmethod
     def exec(self, args: Iterable[str]) -> int:

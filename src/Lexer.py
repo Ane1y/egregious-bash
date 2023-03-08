@@ -1,3 +1,5 @@
+import re
+import shlex
 
 from dataclasses import dataclass
 from typing import Iterable
@@ -6,24 +8,30 @@ from typing import Iterable
 class Lex:
     pass
 
+# to compare symbols in tests
+class ServiceSymbols(Lex):
+    def __eq__(self, other):
+        if type(self) is type(other):
+            return True
+        return False
 
-class Space(Lex):
+class Space(ServiceSymbols):
     pass
 
 
-class Equal(Lex):
+class Equal(ServiceSymbols):
     pass
 
 
-class Pipe(Lex):
+class PipeChar(ServiceSymbols):
     pass
 
 
-class EndLine(Lex):
+class EndLine(ServiceSymbols):
     pass
 
 
-class EndOfFile(Lex):
+class EndOfFile(ServiceSymbols):
     pass
 
 
@@ -46,9 +54,38 @@ class StrLex(Lex):
 
 
 class Lexer:
-
     def __init__(self, text: str):
+        self.words = re.split(r'(\s+|=|[|]|"[^"]*"|\'[^\']*\')', text)
+        # self.words = list(shlex.shlex(text, punctuation_chars=" "))
         self.text = text
+    def get_lex(self, word: str) -> Lex:
+        if word == "=":
+            return Equal()
+
+        if word == "|":
+            return PipeChar()
+
+        if word[0] == "\"":
+            return DoubleQuoted(word[1:-1])
+
+        if word[0] == "'":
+            return Quoted(word[1:-1])
+
+        if re.compile(r'\s+').match(word):
+            return Space()
+
+        return StrLex(word)
 
     def get(self) -> Iterable[Lex]:
-        raise NotImplemented
+        for word in self.words:
+            if (word != "") :
+                yield self.get_lex(word)
+            else:
+                continue
+        yield EndLine()
+
+
+if __name__ == "__main__" :
+    text = input()
+    lexer = Lexer(text)
+    print(list(lexer.get()))

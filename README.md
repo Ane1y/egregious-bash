@@ -63,13 +63,13 @@ class Program:
 
 ### Диаграмма классов:
 
-![](class_diagram.png)
+![](doc/class_diagram.png)
 
 Source code: [class_diagram.puml](class_diagram.puml)
 
 ### Диаграмма состояний:
 
-![](state_diagram.png)
+![](doc/state_diagram.png)
 
 Source code: [state_diagram.puml](state_diagram.puml)
 

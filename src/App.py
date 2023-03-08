@@ -6,12 +6,12 @@ from src.Extender import Extender
 from src.Executable import Executable
 from src.Environment import Environment
 
-from typing import Union, Iterable
+from typing import Union, Iterable, Dict
 
 
 class App:
-    def __init__(self):
-        self.env = Environment(dict(os.environ))
+    def __init__(self, env: Dict[str, str]):
+        self.env = Environment(env)
 
     def run(self):
         text = input(" > ")
@@ -47,4 +47,4 @@ class App:
 
 
 if __name__ == '__main__':
-    App().run()
+    App(dict(os.environ)).run()

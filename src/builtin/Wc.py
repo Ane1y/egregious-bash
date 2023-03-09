@@ -54,3 +54,6 @@ class Wc(BuiltIn):
         if error:
             return 1
         return 0
+
+    def exec_pipe(self, args: List[str], stdin: int) -> int:
+        raise NotImplemented

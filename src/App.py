@@ -3,7 +3,7 @@ import sys
 
 from src.Parser import Parser, Program, Cmd, Pipe, Assignment
 from src.Lexer import Lexer
-from src.Extender import Extender
+from src.Expander import Expander
 from src.Environment import Environment
 
 from typing import Union, Iterable, Dict
@@ -16,8 +16,8 @@ class App:
     def run(self):
         text = input(" > ")
         lexer = Lexer(text)
-        extender = Extender(lexer.get())
-        parser = Parser(extender.get())
+        expander = Expander(lexer.get())
+        parser = Parser(expander.get())
 
         self.execute_program(parser.get())
 

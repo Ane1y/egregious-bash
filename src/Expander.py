@@ -2,7 +2,7 @@ from src.Lexer import Lex
 from typing import Iterable
 
 
-class Extender:
+class Expander:
     def __init__(self, lex: Iterable[Lex]):
         self.lex = lex
 

@@ -6,7 +6,6 @@ from src.Executable import BuiltIn
 
 
 class Wc(BuiltIn):
-
     def exec(self, args: List[str]) -> int:
         files: List[str] = args
         stats: List[Tuple[int, int, int]] = []
@@ -22,7 +21,7 @@ class Wc(BuiltIn):
                 with open(file, "r+") as f:
                     text = f.read()
             except OSError as e:
-                print(f'wc: {e.filename}: {e.strerror}')
+                print(f"wc: {e.filename}: {e.strerror}")
                 error = True
 
             # Lines
@@ -30,7 +29,9 @@ class Wc(BuiltIn):
             total_lns += lns
 
             # Words | split by spaces, filter out empty words
-            wrd: int = len(list(filter(lambda word: word != "", re.split("\\s+", text))))
+            wrd: int = len(
+                list(filter(lambda word: word != "", re.split("\\s+", text)))
+            )
             total_wrd += wrd
 
             # Bytes

@@ -5,7 +5,6 @@ from src.Executable import BuiltIn
 
 
 class Pwd(BuiltIn):
-
     def exec(self, args: List[str]) -> int:
         print(os.getcwd())
         return 0

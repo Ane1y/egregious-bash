@@ -5,7 +5,6 @@ from src.Executable import BuiltIn
 
 
 class Exit(BuiltIn):
-
     def exec(self, args: List[str]) -> int:
         if len(args) > 1:
             print("exit: to many arguments", file=sys.stderr)

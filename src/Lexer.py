@@ -83,7 +83,7 @@ class Lexer:
 
     def get(self) -> Iterable[Lex]:
         for word in self.words:
-            if (word != "") :
+            if word != "":
                 yield self.get_lex(word)
             else:
                 continue

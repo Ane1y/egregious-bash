@@ -14,12 +14,13 @@ class App:
         self.env = Environment(env)
 
     def run(self):
-        text = input(" > ")
-        lexer = Lexer(text)
-        expander = Expander(lexer.get())
-        parser = Parser(expander.get())
+        while True:
+            text = input(" > ")
+            lexer = Lexer(text)
+            expander = Expander(lexer.get())
+            parser = Parser(expander.get())
 
-        self.execute_program(parser.get())
+            self.execute_program(parser.get())
 
     def execute_program(self, prog: Program):
         for cmd in prog.commands:

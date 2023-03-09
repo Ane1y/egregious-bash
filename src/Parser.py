@@ -1,7 +1,6 @@
 from typing import Iterable, Union, List
 from dataclasses import dataclass
 
-from src.Lexer import Lex, Equal, StrLex, PipeChar, EndLine
 from utils import *
 
 @dataclass
@@ -32,35 +31,44 @@ class Parser:
         self.lex = lex
 
     def get_iter(self) -> Iterable[Union[Pipe, Cmd, Assignment]]:
-        commands_pack = List[Union[Pipe, Cmd, Assignment]]
-        buffer = next(self.lex)
+        it = iter(self.lex)
+        init = next(it)
+        buffer = ""
+        while strLex(init):
+            buffer += init.text
+            init = next(it)
 
         while not(eof(buffer)): #Program level
-            if not(pipeChar(buffer)): # Cmd/Pipe level
-                symbol = next(self.lex)
-                if equal(symbol):
-                    value = next(self.lex)
-                    if strLex(value):
+            commands_pack = List[Union[Pipe, Cmd, Assignment]]
 
-                        value += next(self.lex)
-        #
-        #
-        # while not(isinstance(name, PipeChar)) and not(isinstance(name, EndLine)):
-        #     if not(isinstance(name, StrLex)):
-        #         raise ValueError(f"command not found {name}")
-        #
-        #     something = next(self.lex)
-        #
-        #     if isinstance(something, Equal):
-        #         value = next(self.lex)
-        #         if not(isinstance(value, StrLex)):
-        #             raise ValueError("parse error near {value}")
-        #         else:
-        #             yield Assignment(name.text, value.text)
-        #             name = next(self.lex)
-        #
-        #     else:
-        #         pass
+            if not(endl(buffer)):
+
+                if strLex(buffer): # Cmd/Pipe level
+                    symbol = next(it)
+                    # two possible variants: if second lexem in string is = then it s assigment, otherwise cmd
+                    if equal(symbol):
+                        value = next(it)
+                        if strLex(value):
+                            read_str(value.text, it)
+                        else:
+                            buffer = value
+                            value = ""
+                        commands_pack.append(Assignment(buffer, value))
+                    # if cmd
+                    if space(symbol):
+                        args = []
+                        args_value = next(it)
+                        args_buffer = ""
+                        while not(delimeter(args_value)): #TODO:check types
+                            while not(space(args_value)):
+                                args.append(read_str(args_value.text, it))
+                                args_value = it
+                        tmp = Cmd(commands_pack, buffer.text, args)
+                        commands_pack = [tmp]
+                        buffer = args_value
+
+                # if pipeChar(buffer):
+
 
 
     def get(self) -> Program:

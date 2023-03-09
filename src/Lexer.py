@@ -32,7 +32,7 @@ class PipeChar(ServiceSymbols):
 
 class EndLine(ServiceSymbols):
     def __str__(self):
-        return "eofl"
+        return "endl"
 
 
 class EndOfFile(ServiceSymbols):

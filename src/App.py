@@ -46,8 +46,8 @@ class App:
             except FileNotFoundError:
                 print(f"ebash: {cmd.name}: can't file such executable", file=sys.stderr)
 
-        raise ValueError(f'Unexpected type of cmd, got {type(cmd)}')
+        raise ValueError(f"Unexpected type of cmd, got {type(cmd)}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     App(dict(os.environ)).run()

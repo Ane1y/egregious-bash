@@ -1,4 +1,4 @@
-from typing import  List
+from typing import List
 from src.Executable import BuiltIn
 import sys
 
@@ -27,7 +27,7 @@ class Cat(BuiltIn):
 
         for file in files:
             try:
-                with open(file, 'r') as f:
+                with open(file, "r") as f:
                     print(f.read())
             except OSError as e:
                 print(f"cat: {e.filename}: {e.strerror}", file=sys.stderr)

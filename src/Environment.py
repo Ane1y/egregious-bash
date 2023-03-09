@@ -21,7 +21,6 @@ class Environment:
         self.variables[name] = value
 
     def get_exec(self, name_or_path: str) -> Executable:
-
         if name_or_path in self.executables:
             return self.executables[name_or_path]
 
@@ -42,14 +41,14 @@ class Environment:
         raise FileNotFoundError
 
     def __path(self) -> List[str]:
-        if 'PATH' in self.variables:
-            return self.variables['PATH'].split(':')
+        if "PATH" in self.variables:
+            return self.variables["PATH"].split(":")
 
         return [os.getcwd()]
 
     def __init_executables(self):
-        self.executables['cat'] = Cat()
-        self.executables['echo'] = Echo()
-        self.executables['exit'] = Exit()
-        self.executables['pwd'] = Pwd()
-        self.executables['wc'] = Wc()
+        self.executables["cat"] = Cat()
+        self.executables["echo"] = Echo()
+        self.executables["exit"] = Exit()
+        self.executables["pwd"] = Pwd()
+        self.executables["wc"] = Wc()

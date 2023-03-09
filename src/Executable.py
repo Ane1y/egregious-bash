@@ -1,16 +1,19 @@
-
 from abc import ABC, abstractmethod
-from typing import Iterable
+from typing import List
+from src.Environment import Environment
 
 
 class Executable(ABC):
-
     @abstractmethod
-    def exec(self, args: Iterable[str]) -> int:
+    def set_env(self, env: Environment):
         raise NotImplemented
 
     @abstractmethod
-    def exec_pipe(self, args: Iterable[str], stdin: int) -> int:
+    def exec(self, args: List[str]) -> int:
+        raise NotImplemented
+
+    @abstractmethod
+    def exec_pipe(self, args: List[str], stdin: int) -> int:
         """
         :param args: arguments to pass to a process
         :param stdin: input stream descriptor
@@ -20,4 +23,5 @@ class Executable(ABC):
 
 
 class BuiltIn(Executable, ABC):
-    pass
+    def set_env(self, env: Environment):
+        pass

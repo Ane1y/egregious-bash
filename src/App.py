@@ -1,12 +1,17 @@
-from src.Parser import *
-from src.Lexer import *
-from src.Extender import *
-from src.Executable import *
+import os
+
+from src.Parser import Parser, Program, Cmd, Pipe, Assignment
+from src.Lexer import Lexer
+from src.Extender import Extender
+from src.Executable import Executable
+from src.Environment import Environment
+
+from typing import Union, Iterable, Dict
 
 
 class App:
-    def __init__(self):
-        pass
+    def __init__(self, env: Dict[str, str]):
+        self.env = Environment(env)
 
     def run(self):
         text = input(" > ")
@@ -14,15 +19,32 @@ class App:
         extender = Extender(lexer.get())
         parser = Parser(extender.get())
 
-        self.execute(parser.get())
+        self.execute_program(parser.get())
 
-    def execute(self, prog: Program):
-
+    def execute_program(self, prog: Program):
         for cmd in prog.commands:
+            self.execute_cmd(cmd)
+
+    def execute_cmd(self, cmd: Union[Pipe | Cmd | Assignment]):
+        if type(cmd) == Pipe:
             raise NotImplemented
 
+        if type(cmd) == Assignment:
+            self.env.set_var(cmd.name, cmd.value)
+            return
+
+        if type(cmd) == Cmd:
+            executable = self.env.get_exec(cmd.name)
+
+            cmd_env = Environment(self.env.variables)
+            for ass in cmd.prefix:
+                cmd_env.set_var(ass.name, ass.value)
+
+            executable.set_env(cmd_env)
+            executable.exec(cmd.suffix)
+
+        raise ValueError(f'Unexpected type of cmd, got {type(cmd)}')
 
 
 if __name__ == '__main__':
-    app = App()
-    app.run()
+    App(dict(os.environ)).run()

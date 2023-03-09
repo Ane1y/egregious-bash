@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import List
-from src.Environment import Environment
+from typing import List, Dict
 
 
 class Executable(ABC):
     @abstractmethod
-    def set_env(self, env: Environment):
+    def set_env(self, env: Dict[str, str]):
         raise NotImplemented
 
     @abstractmethod
@@ -23,5 +22,5 @@ class Executable(ABC):
 
 
 class BuiltIn(Executable, ABC):
-    def set_env(self, env: Environment):
+    def set_env(self, env: Dict[str, str]):
         pass

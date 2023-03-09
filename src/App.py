@@ -1,9 +1,9 @@
 import os
+import sys
 
 from src.Parser import Parser, Program, Cmd, Pipe, Assignment
 from src.Lexer import Lexer
 from src.Extender import Extender
-from src.Executable import Executable
 from src.Environment import Environment
 
 from typing import Union, Iterable, Dict
@@ -34,14 +34,17 @@ class App:
             return
 
         if type(cmd) == Cmd:
-            executable = self.env.get_exec(cmd.name)
+            try:
+                executable = self.env.get_exec(cmd.name)
 
-            cmd_env = Environment(self.env.variables)
-            for ass in cmd.prefix:
-                cmd_env.set_var(ass.name, ass.value)
+                cmd_env = Environment(self.env.variables)
+                for ass in cmd.prefix:
+                    cmd_env.set_var(ass.name, ass.value)
 
-            executable.set_env(cmd_env)
-            executable.exec(cmd.suffix)
+                executable.set_env(cmd_env.variables)
+                executable.exec(cmd.suffix)
+            except FileNotFoundError:
+                print(f"ebash: {cmd.name}: can't file such executable", file=sys.stderr)
 
         raise ValueError(f'Unexpected type of cmd, got {type(cmd)}')
 

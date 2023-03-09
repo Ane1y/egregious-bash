@@ -1,10 +1,19 @@
 @startuml
 state GenerateProgram {
   Lexer: Генерирует лексемы из входного текста
+  Expander: Реализует подстановки в соответствующие лексемы
   Parser: Создаёт объект `Program` из входящих токенов
   [*] --> Lexer : Строка
-  Lexer --> Parser : Токены
+  Lexer --> Expander: Токены
+  Expander --> Parser: Токены
   Parser --> [*] : объект Program
+}
+
+state Expander {
+  state "Lexer" as LexerExp: Разбивает лексемы строк на новые лексемы после подстановки
+  [*] -> Expand
+  Expand -> LexerExp
+  LexerExp-> [*]
 }
 
 

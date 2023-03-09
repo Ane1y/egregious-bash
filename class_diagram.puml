@@ -3,16 +3,16 @@ class Environment {
   vars_: Dict[str, str]
   execs_: Dict[str, Executable]
 
+  get_var(name: str): str
+  set_var(name: str, value: str)
 
-  set_variable(name: str, value: str)
-
-  variable(name: str): str
-  executable(name: str): str | None
+  get_exec(name: str): Executable
 }
 
 interface Executable {
-  exec(env: Dict[str, str], args: List[str]): int
-  pipe_exec(env: Dict[str, str], args: List[str],\n\tstdin:File) : File
+  set_env(env: Dict[str, str])
+  exec(args: List[str]): int
+  pipe_exec(args: List[str], stdin: File) : File
 }
 
 class External {
@@ -20,21 +20,25 @@ class External {
 }
 
 class Lexer {
-  env: Environment
-  update(env: Environment)
-  lex(input: str): Iterable[Tuple[str, str | None]]
+  __init__(text: str)
+  get(): Iterable[Lex]
 }
 
 class Parser {
-  env: Environment
-  update(env: Environment)
-  parse(input: Iterable): Program
+  __init__(lex: Iterable[Lex])
+  get(): Program
 }
+
+
+class Expander {
+  env: Evironment
+  __init__(lex: Iterable[Lex])
+  get(): Iterable[Lex]
+}
+
 
 class App {
   env: Evironment
-  lexer: Lexer
-  parser: Parser
   __init__(env: Dicr[str, str])
   run()
 }
@@ -61,19 +65,27 @@ class Program {
 	cmds: List[Cmd | Assignment | Pipeline]
 }
 
-Program *-- Cmd
-Program *-- Pipeline
-Program *-- Assignment
-Cmd *- Assignment
-Pipeline *- Cmd
+abstract class Lex {}
+
+Program o-- Cmd
+Program o-- Pipeline
+Program o-- Assignment
+Cmd o- Assignment
+Pipeline o- Cmd
 
 
 Parser .. Program
 
 
 App o-- Lexer
+App o-- Expander
 App o-- Parser
 App o-- Environment
+Expander -o Lexer
+
+Lexer .. Lex
+Parser .. Lex
+Expander .. Lex
 
 Executable <|-- BuiltIn
 
@@ -84,5 +96,5 @@ BuiltIn <|-- Echo
 BuiltIn <|-- Wc
 BuiltIn <|-- Pwd
 
-Environment *-- Executable
+Environment o-- Executable
 @enduml

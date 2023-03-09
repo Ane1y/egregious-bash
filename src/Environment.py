@@ -1,6 +1,9 @@
-from typing import Dict
+import os
+from typing import Dict, List, Optional
 from src.Executable import Executable
-import src.builtin.Cat
+from src.builtin import *
+from src.External import External
+from shutil import which
 
 
 class Environment:
@@ -22,8 +25,31 @@ class Environment:
         if name_or_path in self.executables:
             return self.executables[name_or_path]
 
-        # TODO: Implement PATH search for executable
-        raise NotImplemented
+        exe: Optional[External] = None
+        if os.path.exists(name_or_path):
+            exe = External(name_or_path)
+
+        else:
+            for directory in self.__path():
+                path = which(name_or_path, path=directory)
+                if path is not None:
+                    exe = External(path)
+
+        if exe is not None:
+            self.executables[name_or_path] = exe
+            return exe
+
+        raise FileNotFoundError
+
+    def __path(self) -> List[str]:
+        if 'PATH' in self.variables:
+            return self.variables['PATH'].split(':')
+
+        return [os.getcwd()]
 
     def __init_executables(self):
-        self.executables['cat'] = src.builtin.Cat.Cat()
+        self.executables['cat'] = Cat()
+        self.executables['echo'] = Echo()
+        self.executables['exit'] = Exit()
+        self.executables['pwd'] = Pwd()
+        self.executables['wc'] = Wc()

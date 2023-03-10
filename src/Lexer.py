@@ -54,8 +54,8 @@ class DoubleQuoted(Str):
 
 
 @dataclass
-class StrLex(Lex):
-    text: str
+class StrLex(Str):
+    pass
 
 
 class Lexer:

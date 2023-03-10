@@ -1,6 +1,6 @@
 import pytest
 from src.Lexer import Lexer
-from src.Parser import Parser, Assignment, Cmd
+from src.Parser import Parser, Assignment, Cmd, Pipe
 
 
 def test_simple_cmd():
@@ -21,6 +21,15 @@ def test_cmd_with_prefix():
     assert cmd.name == "echo"
     assert cmd.suffix == ["bum", "asd"]
 
+def test_wrong_cmd_with_equals():
+    lex = Lexer("=456 asd")
+    parser = Parser(lex.get())
+    cmd = next(parser.get().commands)
+    assert isinstance(cmd, Cmd)
+    assert cmd.prefix == []
+    assert cmd.name == "=456"
+    assert cmd.suffix == ["asd"]
+
 def test_assigment():
     lex = Lexer("asd=123")
     parser = Parser(lex.get())
@@ -30,8 +39,8 @@ def test_assigment():
     assert cmd.value == "123"
 
 def test_simple_pipe():
-    lex = Lexer("asd=123")
+    lex = Lexer("asd=123 | echo qwe")
     parser = Parser(lex.get())
     cmd = next(parser.get().commands)
-    assert cmd.name == "asd"
-    assert cmd.value == "123"
+    assert isinstance(cmd, Pipe)
+    assert cmd.commands == [Assignment("asd", "123"), Cmd([], "echo", ["qwe"])]

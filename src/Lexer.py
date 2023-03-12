@@ -32,7 +32,7 @@ class PipeChar(ServiceSymbols):
 
 class EndLine(ServiceSymbols):
     def __str__(self):
-        return "eofl"
+        return "endl"
 
 
 class EndOfFile(ServiceSymbols):
@@ -54,8 +54,8 @@ class DoubleQuoted(Str):
 
 
 @dataclass
-class StrLex(Lex):
-    text: str
+class StrLex(Str):
+    pass
 
 
 class Lexer:
@@ -88,6 +88,7 @@ class Lexer:
             else:
                 continue
         yield EndLine()
+        yield EndOfFile()
 
 
 if __name__ == "__main__" :

@@ -31,39 +31,54 @@ class Parser:
     def __init__(self, lex: Iterable[Lex]):
         self.it = iter(lex)
         self.command_pack = []
+        self.token = next(self.it)
+        self.next_token = next(self.it)
+
+    def next(self):
+        """
+        :return: update the pair of token (token, next_token)
+        """
+        self.token = self.next_token
+        try:
+            self.next_token = next(self.it)
+        except:
+            self.next_token = self.token
 
     def get_iter(self) -> Pipe | Cmd | Assignment:
-        token = next(self.it)
+        if space(self.token):
+            self.next()
 
-        if space(token):
-            token = next(self.it)
-
-        if pipeChar(token):
+        if pipeChar(self.token):
             raise ValueError("syntax error near |")
 
         name = ""
         pipe_queue = []
 
-        while not(eof(token)): #Program level
-            if not(endl(token)):
-                if pipeChar(token) or pipe_queue:
+        while not(eof(self.token)): #Program level
+            if not(endl(self.token)):
+                if pipeChar(self.token) or pipeChar(self.next_token) or pipe_queue:
                     self.form_cmd_to_pipe(pipe_queue)
-                    token = next(self.it)
+                    self.next()
 
-                if strLex(token) or name == "" and not delimeter(token):
-                    name, token = self.read_name(token)
+                if strLex(self.token) or name == "" and not delimeter(self.token):
+                    name = self.read_name()
 
-                if equal(token) or strLex(token):
-                    token = self.read_cmd_or_assigment(name, token)
+                if equal(self.token) or space(self.token):
+                    if equal(self.token):
+                        value = self.read_assigment()
+                        self.command_pack.append(Assignment(name, value))
+                    else:
+                        args = self.read_args()
+                        self.command_pack = [Cmd(self.command_pack, name, args)]
                     name = ""
+                # self.next()
 
+            elif pipe_queue:
+                self.form_cmd_to_pipe(pipe_queue)
+                yield Pipe(pipe_queue)
             else:
-                if pipe_queue:
-                    self.form_cmd_to_pipe(pipe_queue)
-                    yield Pipe(pipe_queue)
-                else:
-                    yield self.command_pack[0]
-            #endl level
+                yield self.command_pack[0]
+                #endl level
 
 
     def get(self) -> Program:
@@ -76,48 +91,36 @@ class Parser:
             queue.append(cmd)
         self.command_pack = []
 
-    def read_str(self, init_value: str) -> (str, Lex):
-        buf = next(self.it)
+    def read_str(self, init_value: str) -> str:
+        self.next()
         value = init_value
-        while strLex(buf):
-            value += buf.text
-            buf = next(self.it)
-        return value, buf
+        while strLex(self.token):
+            value += self.token.text
+            self.next()
+        return value
 
-    def read_name(self, next_token):
-        if space(next_token):
-            next_token = next(self.it)
-        if equal(next_token):
-            next_token.text = "="
-        return self.read_str(next_token.text)
+    def read_name(self):
+        if space(self.token):
+            self.next()
+        if equal(self.token):
+            self.token.text = "="
+        return self.read_str(self.token.text)
 
-    def read_assigment(self) -> (str, Iterator[Lex]):
-        buffer = next(self.it)
-        if strLex(buffer):
-            value, buffer = self.read_str(buffer.text)
+    def read_assigment(self) -> str:
+        self.next()
+        if strLex(self.token):
+            value = self.read_str(self.token.text)
         else:
             value = ""
-        return value, buffer
+        return value
 
-    def read_args(self) -> (List[str], Lex):
+    def read_args(self) -> List[str]:
         args = []
-        buffer = next(self.it)
-        while not (delimeter(buffer)):  # TODO:check types
-            while strLex(buffer):
-                arg, buffer = self.read_str(buffer.text)
+        self.next()
+        while not (delimeter(self.token)):
+            while strLex(self.token):
+                arg = self.read_str(self.token.text)
                 args.append(arg)
-            if space(buffer):
-                buffer = next(self.it)
-        return args, buffer
-
-    def read_cmd_or_assigment(self, name: str, next_token : Lex):
-        # if asssigment
-        # two possible variants: if second lexem in string is = then it s assigment, otherwise cmd
-        if equal(next_token):
-            value, next_token = self.read_assigment()
-            self.command_pack.append(Assignment(name, value))
-        # if cmd
-        elif space(next_token):
-            args, next_token = self.read_args()
-            self.command_pack = [Cmd(self.command_pack, name, args)]
-        return next_token
+            if space(self.token):
+                self.next()
+        return args

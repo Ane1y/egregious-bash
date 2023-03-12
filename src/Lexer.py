@@ -88,6 +88,7 @@ class Lexer:
             else:
                 continue
         yield EndLine()
+        yield EndOfFile()
 
 
 if __name__ == "__main__" :

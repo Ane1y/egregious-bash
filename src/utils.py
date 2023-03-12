@@ -29,4 +29,3 @@ def strLex(lex: Lex) -> bool:
 def delimeter(lex: Lex) -> bool:
     return isinstance(lex, PipeChar) or isinstance(lex, EndLine) or isinstance(lex, EndOfFile)
 
-

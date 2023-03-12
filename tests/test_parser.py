@@ -44,3 +44,17 @@ def test_simple_pipe():
     cmd = next(parser.get().commands)
     assert isinstance(cmd, Pipe)
     assert cmd.commands == [Assignment("asd", "123"), Cmd([], "echo", ["qwe"])]
+
+def test_pipe_without_spaces():
+    lex = Lexer("asd=123|echo qwe")
+    parser = Parser(lex.get())
+    cmd = next(parser.get().commands)
+    assert isinstance(cmd, Pipe)
+    assert cmd.commands == [Assignment("asd", "123"), Cmd([], "echo", ["qwe"])]
+
+def test_pipe_double_command():
+    lex = Lexer("zch asd sdf | echo qwe")
+    parser = Parser(lex.get())
+    cmd = next(parser.get().commands)
+    assert isinstance(cmd, Pipe)
+    assert cmd.commands == [Cmd([], "zch", ["asd", "sdf"]), Cmd([], "echo", ["qwe"])]

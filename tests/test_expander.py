@@ -1,6 +1,5 @@
 from src.Expander import Expander
 from src.Lexer import Lexer, StrLex, EndLine, EndOfFile, Space, DoubleQuoted, Quoted
-from src.Parser import Parser
 
 def get_env():
     return {"a": "123", "asd": "456"}

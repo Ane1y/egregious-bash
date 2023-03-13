@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from src.Lexer import Lex, Equal, PipeChar, EndLine, EndOfFile, Str, Space, StrLex
+from src.Lexer import Lex, Equal, PipeChar, EndLine, EndOfFile, Str, Space, StrLex, DoubleQuoted, Quoted
 
 
 def equal(lex: Lex) -> bool:
@@ -22,10 +22,18 @@ def eof(lex: Lex) -> bool:
     return isinstance(lex, EndOfFile)
 
 
-def strLex(lex: Lex) -> bool:
+def str_(lex: Lex) -> bool:
     return issubclass(type(lex), Str)
 
 
 def delimeter(lex: Lex) -> bool:
     return isinstance(lex, PipeChar) or isinstance(lex, EndLine) or isinstance(lex, EndOfFile)
 
+def doubleQuoted(lex: Lex) -> bool:
+    return isinstance(lex, DoubleQuoted)
+
+def quoted(lex: Lex) -> bool:
+    return isinstance(lex, Quoted)
+
+def strLex(lex : Lex) -> bool:
+    return isinstance(lex, StrLex)

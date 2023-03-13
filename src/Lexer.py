@@ -63,6 +63,7 @@ class Lexer:
         self.words = re.split(r'(\s+|=|[|]|"[^"]*"|\'[^\']*\')', text)
         # self.words = list(shlex.shlex(text, punctuation_chars=" "))
         self.text = text
+        self.space_regex = re.compile(r'\s+')
     def get_lex(self, word: str) -> Lex:
         if word == "=":
             return Equal()
@@ -76,20 +77,22 @@ class Lexer:
         if word[0] == "'":
             return Quoted(word[1:-1])
 
-        if re.compile(r'\s+').match(word):
+        if self.space_regex.match(word):
             return Space()
 
         return StrLex(word)
 
     def get(self) -> Iterable[Lex]:
+        yield from self.get_substitution()
+        yield EndLine()
+        yield EndOfFile()
+
+    def get_substitution(self) -> Iterable[Lex]:
         for word in self.words:
             if word != "":
                 yield self.get_lex(word)
             else:
                 continue
-        yield EndLine()
-        yield EndOfFile()
-
 
 if __name__ == "__main__" :
     text = input()

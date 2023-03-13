@@ -33,7 +33,7 @@ class Parser:
         self.command_pack = []
         self.token = next(self.it)
         self.next_token = next(self.it)
-
+        self.bip = 234
     def next(self):
         """
         :return: update the pair of token (token, next_token)
@@ -60,7 +60,7 @@ class Parser:
                     self.form_cmd_to_pipe(pipe_queue)
                     self.next()
 
-                if strLex(self.token) or name == "" and not delimeter(self.token):
+                if str_(self.token) or name == "" and not delimeter(self.token):
                     name = self.read_name()
 
                 if equal(self.token) or space(self.token):
@@ -94,7 +94,7 @@ class Parser:
     def read_str(self, init_value: str) -> str:
         self.next()
         value = init_value
-        while strLex(self.token):
+        while str_(self.token):
             value += self.token.text
             self.next()
         return value
@@ -108,7 +108,7 @@ class Parser:
 
     def read_assigment(self) -> str:
         self.next()
-        if strLex(self.token):
+        if str_(self.token):
             value = self.read_str(self.token.text)
         else:
             value = ""
@@ -118,7 +118,7 @@ class Parser:
         args = []
         self.next()
         while not (delimeter(self.token)):
-            while strLex(self.token):
+            while str_(self.token):
                 arg = self.read_str(self.token.text)
                 args.append(arg)
             if space(self.token):

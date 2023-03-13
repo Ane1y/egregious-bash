@@ -37,3 +37,4 @@ def test_single_and_double_quoted_in_one_cmd() :
     lex = Lexer("'qwe $asd'\"$asd some\" zx")
     expander = Expander(lex.get(), get_env())
     assert list(expander.get()) == [Quoted("qwe $asd"), DoubleQuoted("456 some"), Space(), StrLex("zx"), EndLine(), EndOfFile()]
+

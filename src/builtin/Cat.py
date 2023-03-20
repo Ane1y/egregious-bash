@@ -4,7 +4,6 @@ from src.Executable import BuiltIn
 
 
 class Cat(BuiltIn):
-
     def impl(self, args: List[str], stdin, stdout) -> int:
         if len(args) == 0:
             return Cat.user_input()

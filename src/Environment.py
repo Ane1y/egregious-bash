@@ -60,4 +60,6 @@ class Environment:
         self.executables["cat"] = Cat()
         self.executables["wc"] = Wc()
 
-        self.executables["ebash"] = External(sys.executable, Environment.path_to('App.py'))
+        self.executables["ebash"] = External(
+            sys.executable, Environment.path_to("App.py")
+        )

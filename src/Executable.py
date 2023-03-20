@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 from abc import ABC, abstractmethod
 from typing import List, Dict
@@ -38,12 +39,15 @@ class BuiltIn(Executable, ABC):
         return self.impl(args, sys.stdin, sys.stdout)
 
     def exec_pipe(self, args: List[str], stdin):
-        r, w = os.pipe()
-        stdout_write = os.fdopen(w, 'w+')
-        stdout_read = os.fdopen(r, 'r+')
-        self.return_code = self.impl(args, stdin, stdout_write)
-        stdout_write.close()
-        return stdout_read
+        name = self.__class__.__name__.lower()
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "src", name, *args],
+            cwd=self.cwd,
+            stdin=stdin,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        return proc.stdout
 
     @abstractmethod
     def impl(self, args: List[str], stdin, stdout) -> int:

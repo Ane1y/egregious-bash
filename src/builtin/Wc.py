@@ -65,9 +65,7 @@ class Wc(BuiltIn):
         self.total_lns += lns
 
         # Words | split by spaces, filter out empty words
-        wrd: int = len(
-            list(filter(lambda word: word != "", re.split("\\s+", text)))
-        )
+        wrd: int = len(list(filter(lambda word: word != "", re.split("\\s+", text))))
         self.total_wrd += wrd
 
         # Bytes

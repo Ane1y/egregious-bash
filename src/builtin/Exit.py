@@ -16,4 +16,3 @@ class Exit(BuiltIn):
             return int(args[0])
 
         return 0
-

@@ -1,13 +1,9 @@
-import os
 from typing import List
 
 from src.Executable import BuiltIn
 
 
 class Pwd(BuiltIn):
-    def exec(self, args: List[str]) -> int:
-        print(self.cwd)
+    def impl(self, args: List[str], stdin, stdout) -> int:
+        print(self.cwd, file=stdout)
         return 0
-
-    def exec_pipe(self, args: List[str], stdin: int) -> int:
-        raise NotImplemented

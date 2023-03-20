@@ -1,6 +1,7 @@
 import os
 import sys
 
+from src.Executable import Executable
 from src.Parser import Parser, Program, Cmd, Pipe, Assignment
 from src.Lexer import Lexer
 from src.Expander import Expander
@@ -27,28 +28,32 @@ class App:
             self.execute_cmd(cmd)
 
     def execute_cmd(self, cmd: Union[Pipe | Cmd | Assignment]):
-        if type(cmd) == Pipe:
-            raise NotImplemented
-
         if type(cmd) == Assignment:
             self.env.set_var(cmd.name, cmd.value)
             return
 
         if type(cmd) == Cmd:
             try:
-                executable = self.env.get_exec(cmd.name)
-
-                env_vars: Dict[str, str] = self.env.variables.copy()
-                for ass in cmd.prefix:
-                    env_vars[ass.name] = ass.value
-
-                executable.set_env(self.env.cwd, env_vars)
+                executable = self.executable_from_cmd(cmd)
                 executable.exec(cmd.suffix)
             except FileNotFoundError:
                 print(f"ebash: {cmd.name}: can't file such executable", file=sys.stderr)
 
+        if type(cmd) == Pipe:
+
+
         else:
             raise ValueError(f"Unexpected type of cmd, got {type(cmd)}")
+
+
+    def executable_from_cmd(self, cmd: Cmd) -> Executable:
+        executable = self.env.get_exec(cmd.name)
+
+        env_vars: Dict[str, str] = self.env.variables.copy()
+        for ass in cmd.prefix:
+            env_vars[ass.name] = ass.value
+
+        executable.set_env(self.env.cwd, env_vars)
 
 
 if __name__ == "__main__":

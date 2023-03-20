@@ -1,23 +1,16 @@
+import os
+import subprocess
 from typing import List
 from src.Executable import BuiltIn
 import sys
 
 
-class Cat(BuiltIn):
-    def exec(self, args: List[str]) -> int:
-        if len(args) == 0:
-            return Cat.user_input()
-        return Cat.read_files(args)
-
-    def exec_pipe(self, args: List[str], stdin: int) -> int:
-        raise NotImplemented
-
+class Cat:
     @staticmethod
     def user_input():
         try:
-            while True:
-                text = input()
-                print(text)
+            for line in sys.stdin:
+                print(line, end="")
         except EOFError:
             return 0
 
@@ -34,3 +27,12 @@ class Cat(BuiltIn):
                 ret_code = 1
 
         return ret_code
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    exit_code = 0
+    if len(args) == 0:
+        exit_code = Cat.user_input()
+    else:
+        exit_code = Cat.read_files(args)

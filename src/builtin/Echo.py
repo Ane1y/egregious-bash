@@ -5,11 +5,8 @@ from src.Executable import BuiltIn
 
 
 class Echo(BuiltIn):
-    def exec(self, args: List[str]) -> int:
+    def impl(self, args: List[str], stdin, stdout):
         for text in args:
-            print(text, end=" ")
-        print()  # print new line char
+            print(text, end=" ", file=stdout)
+        print(file=stdout)  # print new line char
         return 0
-
-    def exec_pipe(self, args: List[str], stdin: int) -> int:
-        raise NotImplemented

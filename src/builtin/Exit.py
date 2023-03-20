@@ -5,15 +5,16 @@ from src.Executable import BuiltIn
 
 
 class Exit(BuiltIn):
-    def exec(self, args: List[str]) -> int:
+    def exec(self, args: List[str]):
+        sys.exit(self.impl(args, sys.stdin, sys.stdout))
+
+    def impl(self, args: List[str], stdin, stdout):
         if len(args) > 1:
             print("exit: to many arguments", file=sys.stderr)
             return 1
 
         if len(args) == 1:
-            sys.exit(int(args[0]))
+            return int(args[0])
 
-        sys.exit(0)
+        return 0
 
-    def exec_pipe(self, args: List[str], stdin: int) -> int:
-        raise NotImplemented

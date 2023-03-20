@@ -11,6 +11,7 @@ class Environment:
         self.variables: Dict[str, str] = env.copy()
         self.executables: Dict[str, Executable] = dict()
         self.__init_executables()
+        self.cwd = os.getcwd()
 
     def get_var(self, name: str) -> str:
         if name in self.variables:

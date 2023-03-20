@@ -38,17 +38,17 @@ class App:
             try:
                 executable = self.env.get_exec(cmd.name)
 
-                cmd_env = Environment(self.env.variables)
+                env_vars: Dict[str, str] = self.env.variables.copy()
                 for ass in cmd.prefix:
-                    cmd_env.set_var(ass.name, ass.value)
+                    env_vars[ass.name] = ass.value
 
-                executable.set_env(cmd_env.variables)
+                executable.set_env(self.env.cwd, env_vars)
                 executable.exec(cmd.suffix)
-                return
             except FileNotFoundError:
                 print(f"ebash: {cmd.name}: can't file such executable", file=sys.stderr)
 
-        raise ValueError(f"Unexpected type of cmd, got {type(cmd)}")
+        else:
+            raise ValueError(f"Unexpected type of cmd, got {type(cmd)}")
 
 
 if __name__ == "__main__":

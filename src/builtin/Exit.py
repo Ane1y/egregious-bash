@@ -11,9 +11,9 @@ class Exit(BuiltIn):
             return 1
 
         if len(args) == 1:
-            exit(args[0])
+            sys.exit(int(args[0]))
 
-        exit(0)
+        sys.exit(0)
 
     def exec_pipe(self, args: List[str], stdin: int) -> int:
         raise NotImplemented

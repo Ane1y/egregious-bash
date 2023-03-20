@@ -4,7 +4,7 @@ from typing import List, Dict
 
 class Executable(ABC):
     @abstractmethod
-    def set_env(self, env: Dict[str, str]):
+    def set_env(self, workdir: str, env: Dict[str, str]):
         raise NotImplemented
 
     @abstractmethod
@@ -22,5 +22,8 @@ class Executable(ABC):
 
 
 class BuiltIn(Executable, ABC):
-    def set_env(self, env: Dict[str, str]):
-        pass
+    def __init__(self):
+        self.cwd = ""
+
+    def set_env(self, workdir: str, env: Dict[str, str]):
+        self.cwd = workdir

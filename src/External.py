@@ -1,7 +1,6 @@
 import subprocess
 from typing import List, Dict, Tuple
-
-from Executable import Executable
+from src.Executable import Executable
 
 
 class External(Executable):

@@ -1,8 +1,7 @@
-from copy import copy
 from typing import Iterable, Union, List
 from dataclasses import dataclass
 
-from utils import *
+from src.utils import *
 
 
 @dataclass

@@ -1,11 +1,11 @@
 import os
 import sys
 
-from Parser import Parser, Program, Cmd, Pipe, Assignment
-from Lexer import Lexer
-from Expander import Expander
-from Environment import Environment
-from Executable import Executable
+from src.Parser import Parser, Program, Cmd, Pipe, Assignment
+from src.Lexer import Lexer
+from src.Expander import Expander
+from src.Environment import Environment
+from src.Executable import Executable
 
 from typing import Dict
 
@@ -67,6 +67,3 @@ class App:
         executable.set_env(self.env.cwd, env_vars)
         return executable
 
-
-if __name__ == "__main__":
-    App(dict(os.environ)).run()

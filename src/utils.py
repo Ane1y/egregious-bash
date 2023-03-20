@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from Lexer import (
+from src.Lexer import (
     Lex,
     Equal,
     PipeChar,

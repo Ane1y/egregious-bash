@@ -1,7 +1,7 @@
 import os.path
 import re
 from typing import List, Tuple
-from Executable import BuiltIn
+from src.Executable import BuiltIn
 
 
 def print_stats(stats, files, stdout):

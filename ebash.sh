@@ -1,1 +1,1 @@
-python3 src/App.py
+python3 -m src

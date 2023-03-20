@@ -1,10 +1,10 @@
 import os
 import sys
 from typing import Dict, List, Optional
-from Executable import Executable
-from builtin import *
-from External import External
 from shutil import which
+from src.Executable import Executable
+from src.builtin import *
+from src.External import External
 
 
 class Environment:

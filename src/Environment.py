@@ -1,9 +1,9 @@
 import os
 import sys
 from typing import Dict, List, Optional
-from src.Executable import Executable
-from src.builtin import *
-from src.External import External
+from Executable import Executable
+from builtin import *
+from External import External
 from shutil import which
 
 
@@ -57,9 +57,7 @@ class Environment:
         self.executables["echo"] = Echo()
         self.executables["exit"] = Exit()
         self.executables["pwd"] = Pwd()
+        self.executables["cat"] = Cat()
+        self.executables["wc"] = Wc()
 
-        self.executables["ebash"] = External(sys.executable, ['App.py'])
-
-        # both wc and cat can be interrupted with Ctrl-D, but python has no way of intercepting this, so...
-        self.executables["cat"] = External(sys.executable, [Environment.path_to('builtin', 'Cat.py')])
-        self.executables["wc"] = External(sys.executable, [Environment.path_to('builtin', 'Wc.py')])
+        self.executables["ebash"] = External(sys.executable, Environment.path_to('App.py'))

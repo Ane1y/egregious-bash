@@ -1,11 +1,15 @@
-import os
-import subprocess
 from typing import List
-from src.Executable import BuiltIn
+from Executable import BuiltIn
 import sys
 
 
-class Cat:
+class Cat(BuiltIn):
+
+    def impl(self, args: List[str], stdin, stdout) -> int:
+        if len(args) == 0:
+            return Cat.user_input()
+        return Cat.read_files(args)
+
     @staticmethod
     def user_input():
         try:
@@ -27,12 +31,3 @@ class Cat:
                 ret_code = 1
 
         return ret_code
-
-
-if __name__ == '__main__':
-    args = sys.argv[1:]
-    exit_code = 0
-    if len(args) == 0:
-        exit_code = Cat.user_input()
-    else:
-        exit_code = Cat.read_files(args)

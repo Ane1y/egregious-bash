@@ -1,6 +1,5 @@
 from typing import List
-
-from src.Executable import BuiltIn
+from Executable import BuiltIn
 
 
 class Pwd(BuiltIn):

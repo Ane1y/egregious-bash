@@ -17,7 +17,7 @@ class Executable(ABC):
         raise NotImplemented
 
     @abstractmethod
-    def exec_pipe(self, args: List[str], stdin: int) -> int:
+    def exec_pipe(self, args: List[str], stdin):
         """
         :param args: arguments to pass to a process
         :param stdin: input stream descriptor

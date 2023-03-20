@@ -1,16 +1,16 @@
 import subprocess
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
-from src.Executable import Executable
+from Executable import Executable
 
 
 class External(Executable):
-    def __init__(self, path: str, mandatory_args: List[str] = list()):
+    def __init__(self, path: str, *mandatory_args: str):
         super().__init__()
         self.env: Dict[str, str] = dict()
         self.cwd = ""
         self.path: str = path
-        self.mandatory_args: List[str] = mandatory_args
+        self.mandatory_args: Tuple[str, ...] = mandatory_args
 
     def set_env(self, workdir: str, env: Dict[str, str]):
         self.env = env

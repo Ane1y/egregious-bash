@@ -1,9 +1,9 @@
 import re
 
-from src.Lexer import Lex, Lexer, DoubleQuoted, EndOfFile
+from Lexer import Lex, Lexer, DoubleQuoted, EndOfFile
 from typing import Iterable, Dict
 
-from src.utils import doubleQuoted, eof, strLex, quoted, delimeter
+from utils import doubleQuoted, eof, strLex, quoted, delimeter
 
 
 class Expander:

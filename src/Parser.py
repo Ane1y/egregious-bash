@@ -2,7 +2,7 @@ from copy import copy
 from typing import Iterable, Union, List, TypeAlias
 from dataclasses import dataclass
 
-from src.utils import *
+from utils import *
 
 
 @dataclass

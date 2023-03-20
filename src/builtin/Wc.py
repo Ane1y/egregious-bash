@@ -1,19 +1,32 @@
 import os.path
 import re
-import sys
 from typing import List, Tuple
+from Executable import BuiltIn
 
-from src.Executable import BuiltIn
+
+def print_stats(stats, files, stdout):
+    max_len = max([len(str(max(stat))) for stat in stats])
+
+    for stat, file in zip(stats, files):
+        for s in stat:
+            print(f"{s:>{max_len}}", end=" ", file=stdout)
+        print(file, stdout)
 
 
-class Wc:
+class Wc(BuiltIn):
     def __init__(self):
         super().__init__()
         self.total_lns: int = 0
         self.total_wrd: int = 0
         self.total_bts: int = 0
 
-    def impl(self, args) -> int:
+    def reset(self):
+        self.total_lns = 0
+        self.total_wrd = 0
+        self.total_bts = 0
+
+    def impl(self, args: List[str], stdin, stdout) -> int:
+        self.reset()
 
         files: List[str] = args
         stats: List[Tuple[int, int, int]] = []
@@ -24,12 +37,12 @@ class Wc:
                 with open(file, "r+") as f:
                     stats.append(self.count_file(f))
             except OSError as e:
-                print(f"wc: {e.filename}: {e.strerror}")
+                print(f"wc: {e.filename}: {e.strerror}", file=stdout)
                 error = True
 
         if len(files) == 0:
-            for s in self.count_file(sys.stdin):
-                print(f"{s:>{8}}", end=" ")
+            for s in self.count_file(stdin):
+                print(f"{s:>{8}}", end=" ", file=stdout)
 
             return 0
 
@@ -37,19 +50,11 @@ class Wc:
             stats.append((self.total_lns, self.total_wrd, self.total_bts))
             files.append("total")
 
-        self.print_stats(stats, files)
+        print_stats(stats, files, stdout)
 
         if error:
             return 1
         return 0
-
-    def print_stats(self, stats, files):
-        max_len = max([len(str(max(stat))) for stat in stats])
-
-        for stat, file in zip(stats, files):
-            for s in stat:
-                print(f"{s:>{max_len}}", end=" ")
-            print(file)
 
     def count_file(self, file, filename=None) -> Tuple[int, int, int]:
         text = file.read()
@@ -69,7 +74,3 @@ class Wc:
         self.total_bts += bts
 
         return lns, wrd, bts
-
-
-if __name__ == '__main__':
-    Wc().impl(sys.argv[1:])

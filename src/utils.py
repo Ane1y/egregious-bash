@@ -1,10 +1,22 @@
 from typing import Iterator
 
-from src.Lexer import Lex, Equal, PipeChar, EndLine, EndOfFile, Str, Space, StrLex, DoubleQuoted, Quoted
+from src.Lexer import (
+    Lex,
+    Equal,
+    PipeChar,
+    EndLine,
+    EndOfFile,
+    Str,
+    Space,
+    StrLex,
+    DoubleQuoted,
+    Quoted,
+)
 
 
 def equal(lex: Lex) -> bool:
     return isinstance(lex, Equal)
+
 
 def space(lex: Lex) -> bool:
     return isinstance(lex, Space)
@@ -27,13 +39,20 @@ def str_(lex: Lex) -> bool:
 
 
 def delimeter(lex: Lex) -> bool:
-    return isinstance(lex, PipeChar) or isinstance(lex, EndLine) or isinstance(lex, EndOfFile)
+    return (
+        isinstance(lex, PipeChar)
+        or isinstance(lex, EndLine)
+        or isinstance(lex, EndOfFile)
+    )
+
 
 def doubleQuoted(lex: Lex) -> bool:
     return isinstance(lex, DoubleQuoted)
 
+
 def quoted(lex: Lex) -> bool:
     return isinstance(lex, Quoted)
 
-def strLex(lex : Lex) -> bool:
+
+def strLex(lex: Lex) -> bool:
     return isinstance(lex, StrLex)

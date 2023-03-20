@@ -44,6 +44,7 @@ class App:
 
                 executable.set_env(cmd_env.variables)
                 executable.exec(cmd.suffix)
+                return
             except FileNotFoundError:
                 print(f"ebash: {cmd.name}: can't file such executable", file=sys.stderr)
 

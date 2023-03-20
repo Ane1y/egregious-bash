@@ -1,8 +1,9 @@
 from copy import copy
-from typing import Iterable, Union, List
+from typing import Iterable, Union, List, TypeAlias
 from dataclasses import dataclass
 
 from src.utils import *
+
 
 @dataclass
 class Assignment:
@@ -27,13 +28,17 @@ class Program:
     commands: Iterable[Union[Pipe, Cmd, Assignment]]
 
 
+CmdList: TypeAlias = List[Union[Assignment, Cmd, Pipe]]
+
+
 class Parser:
     def __init__(self, lex: Iterable[Lex]):
         self.it = iter(lex)
-        self.command_pack = []
+        self.command_pack: CmdList = []
         self.token = next(self.it)
         self.next_token = next(self.it)
         self.bip = 234
+
     def next(self):
         """
         :return: update the pair of token (token, next_token)
@@ -44,18 +49,18 @@ class Parser:
         except:
             self.next_token = self.token
 
-    def get_iter(self) -> Pipe | Cmd | Assignment:
+    def get_iter(self) -> Iterable[Pipe | Cmd | Assignment]:
         if space(self.token):
             self.next()
 
         if pipeChar(self.token):
             raise ValueError("syntax error near |")
 
-        name = ""
-        pipe_queue = []
+        name: str = ""
+        pipe_queue: CmdList = []
 
-        while not(eof(self.token)): #Program level
-            if not(endl(self.token)):
+        while not (eof(self.token)):  # Program level
+            if not (endl(self.token)):
                 if pipeChar(self.token) or pipeChar(self.next_token) or pipe_queue:
                     self.form_cmd_to_pipe(pipe_queue)
                     self.next()
@@ -63,7 +68,7 @@ class Parser:
                 if str_(self.token) or name == "" and not delimeter(self.token):
                     name = self.read_name()
 
-                if equal(self.token) or space(self.token):
+                if equal(self.token) or space(self.token) or endl(self.token):
                     if equal(self.token):
                         value = self.read_assigment()
                         self.command_pack.append(Assignment(name, value))
@@ -76,50 +81,45 @@ class Parser:
             elif pipe_queue:
                 self.form_cmd_to_pipe(pipe_queue)
                 yield Pipe(pipe_queue)
-            else:
-                yield self.command_pack[0]
-                #endl level
+            else:  # endl
+                self.next()
+                yield self.command_pack.pop(0)
 
+        yield from self.command_pack
 
     def get(self) -> Program:
         return Program(self.get_iter())
 
-
-    #helpers todo:create another class??
+    # helpers todo:create another class??
     def form_cmd_to_pipe(self, queue):
         for cmd in self.command_pack:
             queue.append(cmd)
         self.command_pack = []
 
-    def read_str(self, init_value: str) -> str:
-        self.next()
-        value = init_value
+    def read_str(self) -> str:
+        value = ""
         while str_(self.token):
-            value += self.token.text
+            value += str(self.token)
             self.next()
         return value
 
     def read_name(self):
-        if space(self.token):
+        if space(self.token):  # skip spaces
             self.next()
-        if equal(self.token):
-            self.token.text = "="
-        return self.read_str(self.token.text)
+        return self.read_str()
 
     def read_assigment(self) -> str:
-        self.next()
         if str_(self.token):
-            value = self.read_str(self.token.text)
+            value = self.read_str()
         else:
             value = ""
         return value
 
     def read_args(self) -> List[str]:
         args = []
-        self.next()
         while not (delimeter(self.token)):
             while str_(self.token):
-                arg = self.read_str(self.token.text)
+                arg = self.read_str()
                 args.append(arg)
             if space(self.token):
                 self.next()

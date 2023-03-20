@@ -8,12 +8,14 @@ from typing import Iterable
 class Lex:
     pass
 
+
 # to compare symbols in tests
 class ServiceSymbols(Lex):
     def __eq__(self, other):
         if type(self) is type(other):
             return True
         return False
+
 
 class Space(ServiceSymbols):
     def __str__(self):
@@ -44,6 +46,9 @@ class EndOfFile(ServiceSymbols):
 class Str(Lex):
     text: str
 
+    def __str__(self) -> str:
+        return self.text
+
 
 class Quoted(Str):
     pass
@@ -63,7 +68,8 @@ class Lexer:
         self.words = re.split(r'(\s+|=|[|]|"[^"]*"|\'[^\']*\')', text)
         # self.words = list(shlex.shlex(text, punctuation_chars=" "))
         self.text = text
-        self.space_regex = re.compile(r'\s+')
+        self.space_regex = re.compile(r"\s+")
+
     def get_lex(self, word: str) -> Lex:
         if word == "=":
             return Equal()
@@ -71,7 +77,7 @@ class Lexer:
         if word == "|":
             return PipeChar()
 
-        if word[0] == "\"":
+        if word[0] == '"':
             return DoubleQuoted(word[1:-1])
 
         if word[0] == "'":
@@ -94,7 +100,8 @@ class Lexer:
             else:
                 continue
 
-if __name__ == "__main__" :
+
+if __name__ == "__main__":
     text = input()
     lexer = Lexer(text)
     print(list(lexer.get()))

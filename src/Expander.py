@@ -12,7 +12,7 @@ class Expander:
         self.env = env
 
     def make_subst(self, text: str) -> str:
-        regex = re.compile(r'(\$[A-Za-z0-9]+)')
+        regex = re.compile(r"(\$[A-Za-z0-9]+)")
         subts = []
         poses = []
         for mo in re.finditer(regex, text):
@@ -30,12 +30,12 @@ class Expander:
         buf = next(self.lex)
         while not (eof(buf)):
             if doubleQuoted(buf):
-                yield DoubleQuoted(self.make_subst(buf.text))
+                yield DoubleQuoted(self.make_subst(str(buf)))
 
             if strLex(buf):
-                yield from Lexer(self.make_subst(buf.text)).get_substitution()
+                yield from Lexer(self.make_subst(str(buf))).get_substitution()
 
-            if not(doubleQuoted(buf)) and not(strLex(buf)):
+            if not (doubleQuoted(buf)) and not (strLex(buf)):
                 yield buf
             buf = next(self.lex)
         yield EndOfFile()

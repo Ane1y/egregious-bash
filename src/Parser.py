@@ -1,5 +1,5 @@
 from copy import copy
-from typing import Iterable, Union, List, TypeAlias
+from typing import Iterable, Union, List
 from dataclasses import dataclass
 
 from utils import *
@@ -28,13 +28,10 @@ class Program:
     commands: Iterable[Union[Pipe, Cmd, Assignment]]
 
 
-CmdList: TypeAlias = List[Union[Assignment, Cmd, Pipe]]
-
-
 class Parser:
     def __init__(self, lex: Iterable[Lex]):
         self.it = iter(lex)
-        self.command_pack: CmdList = []
+        self.command_pack: List[Union[Assignment, Cmd, Pipe]] = []
         self.token = next(self.it)
         self.next_token = next(self.it)
         self.bip = 234
@@ -49,7 +46,7 @@ class Parser:
         except:
             self.next_token = self.token
 
-    def get_iter(self) -> Iterable[Pipe | Cmd | Assignment]:
+    def get_iter(self) -> Iterable[Union[Assignment, Cmd, Pipe]]:
         if space(self.token):
             self.next()
 
@@ -57,7 +54,7 @@ class Parser:
             raise ValueError("syntax error near |")
 
         name: str = ""
-        pipe_queue: CmdList = []
+        pipe_queue: List[Union[Assignment, Cmd, Pipe]] = []
 
         while not (eof(self.token)):  # Program level
             if not (endl(self.token)):

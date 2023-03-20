@@ -10,7 +10,7 @@ def print_stats(stats, files, stdout):
     for stat, file in zip(stats, files):
         for s in stat:
             print(f"{s:>{max_len}}", end=" ", file=stdout)
-        print(file, stdout)
+        print(file, file=stdout)
 
 
 class Wc(BuiltIn):
@@ -43,6 +43,7 @@ class Wc(BuiltIn):
         if len(files) == 0:
             for s in self.count_file(stdin):
                 print(f"{s:>{8}}", end=" ", file=stdout)
+            print(file=stdout)
 
             return 0
 

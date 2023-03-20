@@ -7,7 +7,7 @@ from src.utils import doubleQuoted, eof, strLex, quoted, delimeter
 
 
 class Expander:
-    def __init__(self, lex: Iterable[Lex], env: Dict[str, str] = {}):
+    def __init__(self, lex: Iterable[Lex], env: Dict[str, str] = dict()):
         self.lex = iter(lex)
         self.env = env
 

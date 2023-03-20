@@ -17,7 +17,7 @@ class App:
         while True:
             text = input(" > ")
             lexer = Lexer(text)
-            expander = Expander(lexer.get())
+            expander = Expander(lexer.get(), self.env.variables)
             parser = Parser(expander.get())
 
             self.execute_program(parser.get())

@@ -82,8 +82,9 @@ class Parser:
                 self.form_cmd_to_pipe(pipe_queue)
                 yield Pipe(pipe_queue)
             else:  # endl
+                if self.command_pack:
+                    yield self.command_pack.pop(0)
                 self.next()
-                yield self.command_pack.pop(0)
 
         yield from self.command_pack
 
@@ -96,30 +97,33 @@ class Parser:
             queue.append(cmd)
         self.command_pack = []
 
-    def read_str(self) -> str:
-        value = ""
+    def read_str(self, init_value: str) -> str:
+        self.next()
+        value = init_value
         while str_(self.token):
             value += str(self.token)
             self.next()
         return value
 
     def read_name(self):
-        if space(self.token):  # skip spaces
+        if space(self.token):
             self.next()
-        return self.read_str()
+        return self.read_str(str(self.token))
 
     def read_assigment(self) -> str:
+        self.next()
         if str_(self.token):
-            value = self.read_str()
+            value = self.read_str(str(self.token))
         else:
             value = ""
         return value
 
     def read_args(self) -> List[str]:
         args = []
+        self.next()
         while not (delimeter(self.token)):
             while str_(self.token):
-                arg = self.read_str()
+                arg = self.read_str(str(self.token))
                 args.append(arg)
             if space(self.token):
                 self.next()

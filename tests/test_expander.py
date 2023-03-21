@@ -11,6 +11,11 @@ def test_double_substitution():
     lex = Lexer("$a $asd")
     expander = Expander(lex.get(), get_env())
     assert list(expander.get()) == [StrLex("123"), Space(), StrLex("456"), EndLine(), EndOfFile()]
+def test_cyrillic_substitution():
+    lex = Lexer("$я $кь")
+    env = {"я" : "ты", "кь" : "мь"}
+    expander = Expander(lex.get(), env)
+    assert list(expander.get()) == [StrLex("ты"), Space(), StrLex("мь"), EndLine(), EndOfFile()]
 
 def test_fused_substitution():
     lex = Lexer("$a$asd")

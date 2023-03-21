@@ -12,7 +12,7 @@ class Expander:
         self.env = env
 
     def make_subst(self, text: str) -> str:
-        regex = re.compile(r"(\$[A-Za-z0-9]+)")
+        regex = re.compile(r"(\$\w+)")
         subts = []
         poses = []
         for mo in re.finditer(regex, text):

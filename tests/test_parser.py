@@ -79,3 +79,14 @@ def test_pipe_double_command():
     cmd = next(parser.get().commands)
     assert isinstance(cmd, Pipe)
     assert cmd.commands == [Cmd([], "zch", ["asd", "sdf"]), Cmd([], "echo", ["qwe"])]
+
+def test_strange_pipe():
+    lex = Lexer("pwd | cat | no ")
+    expander = Expander(lex.get())
+    parser = Parser(expander.get())
+
+    cmd = next(parser.get().commands)
+    assert isinstance(cmd, Pipe)
+    assert cmd.commands == [Cmd(prefix=[], name='pwd', suffix=[]),
+                           Cmd(prefix=[], name='cat', suffix=[]),
+                           Cmd(prefix=[], name='no', suffix=[])]

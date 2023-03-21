@@ -81,8 +81,11 @@ class Parser:
                 if self.command_pack:
                     yield self.command_pack.pop(0)
                 self.next()
-
-        yield from self.command_pack
+        if pipe_queue:
+            self.form_cmd_to_pipe(pipe_queue)
+            yield Pipe(pipe_queue)
+        else:
+            yield from self.command_pack
 
     def get(self) -> Program:
         return Program(self.get_iter())

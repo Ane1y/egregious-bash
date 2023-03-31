@@ -54,11 +54,10 @@ class App:
                     executable = self.executable_from_cmd(cmd)
                     self.last_return = executable.exec(cmd.suffix)
                 except FileNotFoundError as e:
-                    # print(
-                    #     f"ebash: {cmd.name}: can't find such executable",
-                    #     file=sys.stderr,
-                    # )
-                    print(e)
+                    print(
+                        f"ebash: {cmd.name}: can't find such executable",
+                        file=sys.stderr,
+                    )
                 return
 
             raise ValueError(f"Unexpected type of cmd, got {type(cmd)}")

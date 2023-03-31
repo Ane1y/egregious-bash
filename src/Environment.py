@@ -8,8 +8,8 @@ class Environment:
 
     @staticmethod
     def __init__(env: Dict[str, str]):
-        Environment._variables = env.copy()
-        Environment._spec_variables = dict()
+        Environment._spec_variables = env.copy()
+        Environment._variables = dict()
         Environment._spec_variables['cwd'] = os.getcwd()
 
     @staticmethod
@@ -20,7 +20,9 @@ class Environment:
 
     @staticmethod
     def get_all_vars() -> Dict[str, str]:
-        return Environment._variables.copy()
+        t = Environment._spec_variables.copy()
+        t.update(Environment._variables)
+        return t
 
     @staticmethod
     def get_cwd() -> str:

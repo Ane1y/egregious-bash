@@ -33,7 +33,7 @@ class Environment:
         Environment._variables[name] = value
 
     @staticmethod
-    def set_spec_var( name: str, value: str):
+    def set_spec_var(name: str, value: str):
         Environment._spec_variables[name] = value
 
     @staticmethod

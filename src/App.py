@@ -1,15 +1,14 @@
 import os
 import sys
 from shutil import which
+from typing import Dict, List, Optional
 
-from src.External import External
-from src.Parser import Parser, Program, Cmd, Pipe, Assignment
-from src.Lexer import Lexer
-from src.Expander import Expander
 from src.Environment import Environment
 from src.Executable import Executable
-
-from typing import Dict, List, Optional
+from src.Expander import Expander
+from src.External import External
+from src.Lexer import Lexer
+from src.Parser import Parser, Program, Cmd, Pipe, Assignment
 
 
 class App:

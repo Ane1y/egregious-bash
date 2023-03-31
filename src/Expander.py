@@ -1,9 +1,8 @@
 import re
+from typing import Iterable
 
 from src.Environment import Environment
 from src.Lexer import Lex, Lexer, DoubleQuoted, EndOfFile
-from typing import Iterable
-
 from src.utils import doubleQuoted, eof, strLex
 
 

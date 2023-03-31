@@ -18,8 +18,7 @@ class External(Executable):
 
     def exec(self, args: List[str]) -> int:
         return subprocess.run(
-            [self.path,
-             *self.mandatory_args, *args],
+            [self.path, *self.mandatory_args, *args],
             env=self.local_env,
             cwd=Environment.get_cwd()
         ).returncode

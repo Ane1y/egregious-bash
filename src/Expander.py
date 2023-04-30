@@ -1,15 +1,14 @@
 import re
+from typing import Iterable
 
+from src.Environment import Environment
 from src.Lexer import Lex, Lexer, DoubleQuoted, EndOfFile
-from typing import Iterable, Dict
-
-from src.utils import doubleQuoted, eof, strLex, quoted, delimeter
+from src.utils import doubleQuoted, eof, strLex
 
 
 class Expander:
-    def __init__(self, lex: Iterable[Lex], env: Dict[str, str] = dict()):
+    def __init__(self, lex: Iterable[Lex]):
         self.lex = iter(lex)
-        self.env = env
 
     def make_subst(self, text: str) -> str:
         regex = re.compile(r"(\$\w+)")
@@ -18,7 +17,7 @@ class Expander:
         for mo in re.finditer(regex, text):
             value = mo.group()[1:]
             poses.append((mo.start(), mo.end()))
-            subts.append(self.env[value] if value in self.env else "")
+            subts.append(Environment.get_var(value))
 
         for i in reversed(range(len(subts))):
             start, end = poses[i]

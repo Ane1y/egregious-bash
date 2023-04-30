@@ -1,8 +1,9 @@
-import os
 import subprocess
 import sys
 from abc import ABC, abstractmethod
 from typing import List, Dict
+
+from src.Environment import Environment
 
 
 class Executable(ABC):
@@ -10,7 +11,7 @@ class Executable(ABC):
         self.return_code: int = -1
 
     @abstractmethod
-    def set_env(self, workdir: str, env: Dict[str, str]):
+    def set_local_env(self, env: Dict[str, str]):
         raise NotImplemented
 
     @abstractmethod
@@ -30,10 +31,9 @@ class Executable(ABC):
 class BuiltIn(Executable, ABC):
     def __init__(self):
         super().__init__()
-        self.cwd = ""
 
-    def set_env(self, workdir: str, env: Dict[str, str]):
-        self.cwd = workdir
+    def set_local_env(self, env: Dict[str, str]):
+        pass
 
     def exec(self, args: List[str]) -> int:
         return self.impl(args, sys.stdin, sys.stdout)
@@ -42,7 +42,7 @@ class BuiltIn(Executable, ABC):
         name = self.__class__.__name__.lower()
         proc = subprocess.Popen(
             [sys.executable, "-m", "src", name, *args],
-            cwd=self.cwd,
+            cwd=Environment.get_cwd(),
             stdin=stdin,
             stdout=subprocess.PIPE,
             text=True,

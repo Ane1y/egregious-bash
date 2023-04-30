@@ -1,5 +1,3 @@
-from typing import Iterator
-
 from src.Lexer import (
     Lex,
     Equal,
@@ -40,9 +38,9 @@ def str_(lex: Lex) -> bool:
 
 def delimeter(lex: Lex) -> bool:
     return (
-        isinstance(lex, PipeChar)
-        or isinstance(lex, EndLine)
-        or isinstance(lex, EndOfFile)
+            isinstance(lex, PipeChar)
+            or isinstance(lex, EndLine)
+            or isinstance(lex, EndOfFile)
     )
 
 

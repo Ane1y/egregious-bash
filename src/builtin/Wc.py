@@ -1,6 +1,8 @@
 import os.path
 import re
 from typing import List, Tuple
+
+from src.Environment import Environment
 from src.Executable import BuiltIn
 
 
@@ -28,7 +30,7 @@ class Wc(BuiltIn):
     def impl(self, args: List[str], stdin, stdout) -> int:
         self.reset()
 
-        files: List[str] = args
+        files: List[str] = list(map(Environment.get_cwd_specific_path, args))
         stats: List[Tuple[int, int, int]] = []
         error: bool = False
 

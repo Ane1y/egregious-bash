@@ -1,25 +1,26 @@
 import os
 import sys
+from shutil import which
+from typing import Dict, List, Optional
 
-from src.Parser import Parser, Program, Cmd, Pipe, Assignment
-from src.Lexer import Lexer
-from src.Expander import Expander
 from src.Environment import Environment
 from src.Executable import Executable
-
-from typing import Dict, List
+from src.Expander import Expander
+from src.External import External
+from src.Lexer import Lexer
+from src.Parser import Parser, Program, Cmd, Pipe, Assignment
 
 
 class App:
-    def __init__(self, env: Dict[str, str]):
-        self.env = Environment(env)
+    def __init__(self, env: Dict[str, str], executables: Dict[str, Executable]):
+        Environment(env)
+        self.executables: Dict[str, Executable] = executables
         self.last_return: int = 0
 
     def execute_args(self, args: List[str]):
         cmd = Cmd([], args[0], args[1:])
         try:
             executable = self.executable_from_cmd(cmd)
-            executable.set_env(self.env.cwd, self.env.variables)
             executable.exec(cmd.suffix)
         except FileNotFoundError:
             print(f"{cmd.name}: can't find such executable", file=sys.stderr)
@@ -27,9 +28,9 @@ class App:
     def run(self):
         while True:
             try:
-                text = input(" > ")
+                text = input(f"{Environment.get_cwd()}> ")
                 lexer = Lexer(text)
-                expander = Expander(lexer.get(), self.env.variables)
+                expander = Expander(lexer.get())
                 parser = Parser(expander.get())
 
                 self.execute_program(parser.get())
@@ -40,7 +41,7 @@ class App:
     def execute_program(self, prog: Program):
         for cmd in prog.commands:
             if type(cmd) == Assignment:
-                self.env.set_var(cmd.name, cmd.value)
+                Environment.set_var(cmd.name, cmd.value)
                 return
 
             if type(cmd) == Pipe:
@@ -51,7 +52,7 @@ class App:
                 try:
                     executable = self.executable_from_cmd(cmd)
                     self.last_return = executable.exec(cmd.suffix)
-                except FileNotFoundError:
+                except FileNotFoundError as e:
                     print(
                         f"ebash: {cmd.name}: can't find such executable",
                         file=sys.stderr,
@@ -81,11 +82,31 @@ class App:
         self.last_return = executable.return_code if executable else 0
 
     def executable_from_cmd(self, cmd: Cmd) -> Executable:
-        executable = self.env.get_exec(cmd.name)
+        executable = self.get_exec(cmd.name)
 
-        env_vars: Dict[str, str] = self.env.variables.copy()
+        env_vars: Dict[str, str] = dict()
         for ass in cmd.prefix:
             env_vars[ass.name] = ass.value
 
-        executable.set_env(self.env.cwd, env_vars)
+        executable.set_local_env(env_vars)
         return executable
+
+    def get_exec(self, name_or_path: str) -> Executable:
+        if name_or_path in self.executables:
+            return self.executables[name_or_path]
+
+        exe: Optional[External] = None
+        if os.path.exists(name_or_path):
+            exe = External(name_or_path)
+
+        else:
+            for directory in Environment.get_path():
+                path = which(name_or_path, path=directory)
+                if path is not None:
+                    exe = External(path)
+
+        if exe is not None:
+            self.executables[name_or_path] = exe
+            return exe
+
+        raise FileNotFoundError

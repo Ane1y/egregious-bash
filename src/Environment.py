@@ -1,65 +1,53 @@
 import os
-import sys
-from typing import Dict, List, Optional
-from shutil import which
-from src.Executable import Executable
-from src.builtin import *
-from src.External import External
+from typing import Dict, List
 
 
 class Environment:
-    def __init__(self, env: Dict[str, str]):
-        self.variables: Dict[str, str] = env.copy()
-        self.executables: Dict[str, Executable] = dict()
-        self.__init_executables()
-        self.cwd = os.getcwd()
+    _variables: Dict[str, str]
+    _spec_variables: Dict[str, str]
 
-    def get_var(self, name: str) -> str:
-        if name in self.variables:
-            return self.variables[name]
+    @staticmethod
+    def __init__(env: Dict[str, str]):
+        Environment._spec_variables = env.copy()
+        Environment._variables = dict()
+        Environment._spec_variables['cwd'] = os.getcwd()
+
+    @staticmethod
+    def get_var(name: str) -> str:
+        if name in Environment._variables:
+            return Environment._variables[name]
         return ""
 
-    def set_var(self, name: str, value: str):
-        self.variables[name] = value
+    @staticmethod
+    def get_all_vars() -> Dict[str, str]:
+        t = Environment._spec_variables.copy()
+        t.update(Environment._variables)
+        return t
 
-    def get_exec(self, name_or_path: str) -> Executable:
-        if name_or_path in self.executables:
-            return self.executables[name_or_path]
+    @staticmethod
+    def get_cwd() -> str:
+        return Environment._spec_variables["cwd"]
 
-        exe: Optional[External] = None
-        if os.path.exists(name_or_path):
-            exe = External(name_or_path)
+    @staticmethod
+    def get_cwd_specific_path(path) -> str:
+        return os.path.normpath(os.path.join(Environment.get_cwd(), os.path.expanduser(path)))
 
-        else:
-            for directory in self.__path():
-                path = which(name_or_path, path=directory)
-                if path is not None:
-                    exe = External(path)
+    @staticmethod
+    def set_var(name: str, value: str):
+        Environment._variables[name] = value
 
-        if exe is not None:
-            self.executables[name_or_path] = exe
-            return exe
+    @staticmethod
+    def set_spec_var(name: str, value: str):
+        Environment._spec_variables[name] = value
 
-        raise FileNotFoundError
+    @staticmethod
+    def get_path() -> List[str]:
+        if "PATH" in Environment._spec_variables:
+            return Environment._spec_variables["PATH"].split(":")
 
-    def __path(self) -> List[str]:
-        if "PATH" in self.variables:
-            return self.variables["PATH"].split(":")
-
-        return [os.getcwd()]
+        return [Environment.get_cwd()]
 
     @staticmethod
     def path_to(*args) -> str:
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(curr_dir, *args)
-
-    def __init_executables(self):
-        self.executables["echo"] = Echo()
-        self.executables["exit"] = Exit()
-        self.executables["pwd"] = Pwd()
-        self.executables["cat"] = Cat()
-        self.executables["wc"] = Wc()
-
-        self.executables["ebash"] = External(
-            sys.executable, Environment.path_to("__main__.py")
-        )

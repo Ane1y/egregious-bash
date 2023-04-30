@@ -1,5 +1,5 @@
-from typing import Iterable, Union, List
 from dataclasses import dataclass
+from typing import Iterable, Union, List
 
 from src.utils import *
 

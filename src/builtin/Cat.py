@@ -1,5 +1,7 @@
-from typing import List
 import sys
+from typing import List
+
+from src.Environment import Environment
 from src.Executable import BuiltIn
 
 
@@ -7,7 +9,7 @@ class Cat(BuiltIn):
     def impl(self, args: List[str], stdin, stdout) -> int:
         if len(args) == 0:
             return Cat.user_input()
-        return Cat.read_files(args)
+        return Cat.read_files(list(map(Environment.get_cwd_specific_path, args)))
 
     @staticmethod
     def user_input():

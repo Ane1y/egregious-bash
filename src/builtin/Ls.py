@@ -19,7 +19,7 @@ class Ls(BuiltIn):
     def impl(self, args: List[str], stdin, stdout):
         if len(args) == 0:
             for file in os.scandir(Environment.get_cwd()):
-                print(file.name)
+                print(file.name, file=stdout)
             return 0
 
         if len(args) != 1:
@@ -29,7 +29,7 @@ class Ls(BuiltIn):
         path = Environment.get_cwd_specific_path(args[0])
         if os.path.isdir(path):
             for file in os.scandir(path):
-                print(file.name)
+                print(file.name, file=stdout)
         else:
             print(f"ls: \"{path}\" is not a folder", file=sys.stderr)
             return 1

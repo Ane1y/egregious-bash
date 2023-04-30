@@ -29,6 +29,10 @@ class Environment:
         return Environment._spec_variables["cwd"]
 
     @staticmethod
+    def get_cwd_specific_path(path) -> str:
+        return os.path.normpath(os.path.join(Environment.get_cwd(), path))
+
+    @staticmethod
     def set_var(name: str, value: str):
         Environment._variables[name] = value
 

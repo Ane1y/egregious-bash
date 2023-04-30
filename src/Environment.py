@@ -30,7 +30,7 @@ class Environment:
 
     @staticmethod
     def get_cwd_specific_path(path) -> str:
-        return os.path.normpath(os.path.join(Environment.get_cwd(), path))
+        return os.path.normpath(os.path.join(Environment.get_cwd(), os.path.expanduser(path)))
 
     @staticmethod
     def set_var(name: str, value: str):

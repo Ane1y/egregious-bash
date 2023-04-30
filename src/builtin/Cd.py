@@ -18,7 +18,7 @@ class Cd(BuiltIn):
     """
 
     def impl(self, args: List[str], stdin, stdout):
-        if len(args) == 0 or len(args) == 1 and args[0] == '~':
+        if len(args) == 0:
             args = [os.path.expanduser('~')]
         if len(args) != 1:
             print("cd: wrong number of arguments", file=sys.stderr)
